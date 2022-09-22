@@ -13,6 +13,7 @@ import (
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/redis"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
 )
@@ -26,6 +27,8 @@ func main() {
 
 	cfg := config.GetConfig()
 
+	linkHasher := utils.NewLinkHasher(cfg.HashSalt)
+
 	postgresClient, err := postgresql.NewClient(context.Background(), maxAttemptsForConnectPostgres, cfg.Storage.Postgresql)
 	if err != nil {
 		panic(err)
@@ -38,7 +41,7 @@ func main() {
 
 	storage := repository.NewRepository(postgresClient, redisClient)
 
-	service := service.NewService(storage)
+	service := service.NewService(storage, linkHasher)
 
 	handler := handler.NewHandler(service)
 	handler.Register(router)

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/repository"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/utils"
 )
 
 type Service struct {
@@ -14,8 +15,8 @@ type UrlShortener interface {
 	Get(ctx context.Context, longLink string) (string, error)
 }
 
-func NewService(repos *repository.Repository) *Service {
+func NewService(repos *repository.Repository, hasher utils.LinkHasher) *Service {
 	return &Service{
-		UrlShortener: NewUrlShortenerSevice(repos.UrlShortenerPostgres, repos.UrlShortenerRedis),
+		UrlShortener: NewUrlShortenerSevice(repos.UrlShortenerPostgres, repos.UrlShortenerRedis, hasher),
 	}
 }
