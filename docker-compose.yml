@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    restart: on-failure
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+      - redis
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${USERNAME}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${DATABASE}
+      - DATABASE_HOST=${HOST}
+    ports:
+      - "5433:5433"
+  redis:
+    image: redis
+    ports:
+     - "6379:6379"

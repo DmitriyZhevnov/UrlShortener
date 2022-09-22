@@ -1,0 +1,5 @@
+HOST=host.docker.internal
+PORT=5433
+DATABASE=postgres
+USERNAME=postgres
+PASSWORD=postgres
