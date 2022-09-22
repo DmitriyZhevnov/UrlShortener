@@ -2,14 +2,18 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
-	"net"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/config"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/handler"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/repository"
+	"github.com/DmitriyZhevnov/UrlShortener/internal/server"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/redis"
@@ -46,20 +50,34 @@ func main() {
 	handler := handler.NewHandler(service)
 	handler.Register(router)
 
-	startServer(router, cfg)
-}
+	srv := server.NewServer(router)
 
-func startServer(router *httprouter.Router, cfg *config.Config) {
-	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatal(err)
+	go func() {
+		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("error occurred while running http server: %s\n", err.Error())
+		}
+	}()
+
+	// Graceful Shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+
+	<-quit
+
+	const timeout = 5 * time.Second
+
+	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
+	defer shutdown()
+
+	if err := postgresClient.Close(); err != nil {
+		log.Fatalf(err.Error())
 	}
 
-	server := &http.Server{
-		Handler:      router,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+	if err := redisClient.Close(); err != nil {
+		log.Fatalf(err.Error())
 	}
 
-	log.Fatal(server.Serve(listener))
+	if err := srv.Stop(ctx); err != nil {
+		log.Fatalf("failed to stop server: %v", err)
+	}
 }
