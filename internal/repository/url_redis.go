@@ -17,5 +17,10 @@ func NewUrlShortenerRedis(client *redis.Client) *urlShortenerRedis {
 }
 
 func (s *urlShortenerRedis) Get(ctx context.Context, longLink string) (string, error) {
-	return "", nil
+	return s.client.Get(longLink).Result()
+}
+
+func (s *urlShortenerRedis) Post(ctx context.Context, longLink, shortLink string) error {
+	_, err := s.client.Set(longLink, shortLink, 0).Result()
+	return err
 }

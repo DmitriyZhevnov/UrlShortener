@@ -19,6 +19,7 @@ type UrlShortenerPostgres interface {
 
 type UrlShortenerRedis interface {
 	Get(ctx context.Context, longLink string) (string, error)
+	Post(ctx context.Context, longLink, shortLink string) error
 }
 
 func NewRepository(postgresDB *sql.DB, redisClient *redis.Client) *Repository {
