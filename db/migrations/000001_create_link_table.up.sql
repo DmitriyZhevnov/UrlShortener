@@ -1,8 +1,8 @@
 -- Active: 1663765487031@@127.0.0.1@5432@postgres@public
 CREATE TABLE IF NOT EXISTS public.link (
     id serial PRIMARY KEY,
-    long_link VARCHAR(200) NOT NULL,
-    short_link VARCHAR(200) NOT NULL
+    long_link VARCHAR(500) NOT NULL,
+    short_link VARCHAR(100) NOT NULL
 );
 
 INSERT INTO link (long_link,  short_link) VALUES ('https://www.google.ru/234', 'https://www.google.ru/dfg');
