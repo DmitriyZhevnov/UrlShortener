@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/repository"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/utils"
 	"golang.org/x/sync/errgroup"
@@ -25,8 +26,7 @@ func NewUrlShortenerSevice(p repository.UrlShortenerPostgres, r repository.UrlSh
 func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string, error) {
 	url, err := s.hasher.IsValidLink(longLink)
 	if err != nil {
-		// TODO
-		return "", err
+		return "", apperror.NewBadRequestError("invalid link")
 	}
 
 	shortLink, err := s.redisRepository.Get(ctx, longLink)
@@ -52,7 +52,6 @@ func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string,
 	})
 
 	if err = g.Wait(); err != nil {
-		// TODO
 		return "", err
 	}
 

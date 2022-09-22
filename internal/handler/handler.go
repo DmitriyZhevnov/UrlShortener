@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
 	"github.com/julienschmidt/httprouter"
 )
@@ -22,5 +23,5 @@ func NewHandler(service *service.Service) Handler {
 }
 
 func (h *handler) Register(router *httprouter.Router) {
-	router.HandlerFunc(http.MethodPost, generateUrl, h.GetShortLink)
+	router.HandlerFunc(http.MethodPost, generateUrl, apperror.MiddleWare(h.GetShortLink))
 }

@@ -3,7 +3,9 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"fmt"
+
+	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 )
 
 type urlShortenerPostgres struct {
@@ -24,8 +26,7 @@ func (s *urlShortenerPostgres) Get(ctx context.Context, longLink string) (string
 	var shortLink string
 	err := s.db.QueryRow(q, longLink).Scan(&shortLink)
 	if err != nil {
-		// TODO
-		return "", errors.New("not found")
+		return "", err
 	}
 
 	return shortLink, nil
@@ -39,8 +40,7 @@ func (s *urlShortenerPostgres) Post(ctx context.Context, longLink, shortLink str
                ($1, $2)
     `
 	if err := s.db.QueryRow(q, longLink, shortLink); err.Err() != nil {
-		// TODO
-		return err.Err()
+		return apperror.NewInternalServerError(fmt.Sprintf("failed to save into postgres due to error: %v", err.Err()))
 	}
 
 	return nil

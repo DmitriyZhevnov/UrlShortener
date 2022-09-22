@@ -2,7 +2,9 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"gopkg.in/redis.v3"
 )
 
@@ -22,5 +24,9 @@ func (s *urlShortenerRedis) Get(ctx context.Context, longLink string) (string, e
 
 func (s *urlShortenerRedis) Post(ctx context.Context, longLink, shortLink string) error {
 	_, err := s.client.Set(longLink, shortLink, 0).Result()
-	return err
+	if err != nil {
+		return apperror.NewInternalServerError(fmt.Sprintf("failed to save into redis due to error: %v", err))
+	}
+
+	return nil
 }
