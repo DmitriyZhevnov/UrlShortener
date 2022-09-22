@@ -8,8 +8,7 @@ import (
 )
 
 type Config struct {
-	Storage  Storage
-	HashSalt string
+	Storage Storage
 }
 
 type Storage struct {
@@ -46,7 +45,6 @@ func fromEnv(cfg *Config) error {
 		return err
 	}
 
-	cfg.HashSalt = viper.GetString("HASH_SALT")
 	cfg.Storage.Postgresql.Host = viper.GetString("HOST")
 	cfg.Storage.Postgresql.Port = viper.GetString("PORT")
 	cfg.Storage.Postgresql.Database = viper.GetString("DATABASE")

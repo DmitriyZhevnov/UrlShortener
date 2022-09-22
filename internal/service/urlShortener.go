@@ -39,7 +39,7 @@ func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string,
 		return shortLink, nil
 	}
 
-	shortLink = s.hasher.HashURI(url)
+	shortLink = s.hasher.GenerateShortLink(url)
 
 	g, ctx := errgroup.WithContext(ctx)
 

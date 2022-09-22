@@ -31,7 +31,7 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	linkHasher := utils.NewLinkHasher(cfg.HashSalt)
+	linkHasher := utils.NewLinkHasher()
 
 	postgresClient, err := postgresql.NewClient(context.Background(), maxAttemptsForConnectPostgres, cfg.Storage.Postgresql)
 	if err != nil {
