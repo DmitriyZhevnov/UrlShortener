@@ -9,7 +9,7 @@ import (
 
 func NewClient(ctx context.Context, sc config.Redis) (client *redis.Client, err error) {
 	client = redis.NewClient(&redis.Options{
-		Addr:     sc.Addr,
+		Addr:     sc.Addr + ":" + sc.Port,
 		Password: sc.Password,
 		DB:       sc.DB,
 	})

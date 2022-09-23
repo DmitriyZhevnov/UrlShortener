@@ -25,6 +25,7 @@ type Storage struct {
 
 type Redis struct {
 	Addr     string
+	Port     string
 	Password string
 	DB       int
 }
@@ -69,7 +70,8 @@ func fromEnv(cfg *Config) error {
 	cfg.Storage.Postgresql.Username = viper.GetString("POS_USERNAME")
 	cfg.Storage.Postgresql.Password = viper.GetString("POS_PASSWORD")
 
-	cfg.Storage.Redis.Addr = viper.GetString("REDIS_ADDR")
+	cfg.Storage.Redis.Addr = viper.GetString("REDIS_IMAGE")
+	cfg.Storage.Redis.Port = viper.GetString("REDIS_PORT")
 	cfg.Storage.Redis.Password = viper.GetString("REDIS_PASSWORD")
 	cfg.Storage.Redis.DB = viper.GetInt("REDIS_DB")
 
