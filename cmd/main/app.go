@@ -40,7 +40,7 @@ func main() {
 		panic(err)
 	}
 
-	redisClient, err := redis.NewClient(ctx)
+	redisClient, err := redis.NewClient(ctx, cfg.Storage.Redis)
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +52,7 @@ func main() {
 	handler := handler.NewHandler(service)
 	handler.Register(router)
 
-	srv := server.NewServer(router)
+	srv := server.NewServer(router, cfg.HTTP)
 
 	go func() {
 		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {

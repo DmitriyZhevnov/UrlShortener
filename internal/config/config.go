@@ -9,10 +9,24 @@ import (
 
 type Config struct {
 	Storage Storage
+	HTTP    HTTP
+}
+
+type HTTP struct {
+	Port         string
+	ReadTimeout  int
+	WriteTimeout int
 }
 
 type Storage struct {
 	Postgresql Postgresql
+	Redis      Redis
+}
+
+type Redis struct {
+	Addr     string
+	Password string
+	DB       int
 }
 
 type Postgresql struct {
@@ -45,11 +59,19 @@ func fromEnv(cfg *Config) error {
 		return err
 	}
 
-	cfg.Storage.Postgresql.Host = viper.GetString("HOST")
-	cfg.Storage.Postgresql.Port = viper.GetString("PORT")
-	cfg.Storage.Postgresql.Database = viper.GetString("DATABASE")
-	cfg.Storage.Postgresql.Username = viper.GetString("USERNAME")
-	cfg.Storage.Postgresql.Password = viper.GetString("PASSWORD")
+	cfg.HTTP.Port = viper.GetString("PORT")
+	cfg.HTTP.ReadTimeout = viper.GetInt("READ_TIMEOUT")
+	cfg.HTTP.WriteTimeout = viper.GetInt("WRITE_TIMEOUT")
+
+	cfg.Storage.Postgresql.Host = viper.GetString("POS_HOST")
+	cfg.Storage.Postgresql.Port = viper.GetString("POS_PORT")
+	cfg.Storage.Postgresql.Database = viper.GetString("POS_DATABASE")
+	cfg.Storage.Postgresql.Username = viper.GetString("POS_USERNAME")
+	cfg.Storage.Postgresql.Password = viper.GetString("POS_PASSWORD")
+
+	cfg.Storage.Redis.Addr = viper.GetString("REDIS_ADDR")
+	cfg.Storage.Redis.Password = viper.GetString("REDIS_PASSWORD")
+	cfg.Storage.Redis.DB = viper.GetInt("REDIS_DB")
 
 	return nil
 }
