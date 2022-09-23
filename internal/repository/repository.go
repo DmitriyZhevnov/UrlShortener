@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
 	"gopkg.in/redis.v3"
 )
 
@@ -22,9 +22,9 @@ type UrlShortenerRedis interface {
 	Post(ctx context.Context, longLink, shortLink string) error
 }
 
-func NewRepository(postgresDB *sql.DB, redisClient *redis.Client) *Repository {
+func NewRepository(client postgresql.Client, redisClient *redis.Client) *Repository {
 	return &Repository{
-		UrlShortenerPostgres: NewUrlShortenerPostgreSQL(postgresDB),
+		UrlShortenerPostgres: NewUrlShortenerPostgreSQL(client),
 		UrlShortenerRedis:    NewUrlShortenerRedis(redisClient),
 	}
 }

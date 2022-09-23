@@ -69,9 +69,7 @@ func main() {
 	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
 	defer shutdown()
 
-	if err := postgresClient.Close(); err != nil {
-		log.Fatalf(err.Error())
-	}
+	postgresClient.Close()
 
 	if err := redisClient.Close(); err != nil {
 		log.Fatalf(err.Error())

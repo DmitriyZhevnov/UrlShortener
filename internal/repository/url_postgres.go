@@ -2,19 +2,21 @@ package repository
 
 import (
 	"context"
-	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
+	"github.com/jackc/pgconn"
 )
 
 type urlShortenerPostgres struct {
-	db *sql.DB
+	client postgresql.Client
 }
 
-func NewUrlShortenerPostgreSQL(db *sql.DB) *urlShortenerPostgres {
+func NewUrlShortenerPostgreSQL(client postgresql.Client) *urlShortenerPostgres {
 	return &urlShortenerPostgres{
-		db: db,
+		client: client,
 	}
 }
 
@@ -24,7 +26,7 @@ func (s *urlShortenerPostgres) Get(ctx context.Context, longLink string) (string
 	`
 
 	var shortLink string
-	err := s.db.QueryRow(q, longLink).Scan(&shortLink)
+	err := s.client.QueryRow(ctx, q, longLink).Scan(&shortLink)
 	if err != nil {
 		return "", err
 	}
@@ -39,8 +41,15 @@ func (s *urlShortenerPostgres) Post(ctx context.Context, longLink, shortLink str
         VALUES
                ($1, $2)
     `
-	if err := s.db.QueryRow(q, longLink, shortLink); err.Err() != nil {
-		return apperror.NewInternalServerError(fmt.Sprintf("failed to save into postgres due to error: %v", err.Err()))
+	_, err := s.client.Query(ctx, q, longLink, shortLink)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			pgErr = err.(*pgconn.PgError)
+			newErr := apperror.NewInternalServerError(fmt.Sprintf("SQL Error: %s, Detail: %s, Where: %s, Code: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.Code, pgErr.SQLState()))
+			return newErr
+		}
+		return apperror.NewInternalServerError(fmt.Sprintf("failed to save into postgres due to error: %v", err))
 	}
 
 	return nil
