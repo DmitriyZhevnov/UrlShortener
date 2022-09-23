@@ -13,13 +13,13 @@ services:
     image: postgres
     restart: always
     environment:
-      - POSTGRES_USER=${USERNAME}
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_DB=${DATABASE}
-      - DATABASE_HOST=${HOST}
+      - POSTGRES_USER=${POS_USERNAME}
+      - POSTGRES_PASSWORD=${POS_PASSWORD}
+      - POSTGRES_DB=${POS_DATABASE}
+      - DATABASE_HOST=${POS_HOST}
     ports:
-      - "5433:5433"
+      - "${POS_PORT}:${POS_PORT}"
   redis:
-    image: redis
+    image: ${REDIS_IMAGE}
     ports:
-     - "6379:6379"
+     - "${REDIS_PORT}:${REDIS_PORT}"

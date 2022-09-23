@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
-	"gopkg.in/redis.v3"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
+	"github.com/go-redis/redis/v8"
 )
 
 type Repository struct {
@@ -22,9 +22,9 @@ type UrlShortenerRedis interface {
 	Post(ctx context.Context, longLink, shortLink string) error
 }
 
-func NewRepository(postgresDB *sql.DB, redisClient *redis.Client) *Repository {
+func NewRepository(client postgresql.Client, redisClient *redis.Client) *Repository {
 	return &Repository{
-		UrlShortenerPostgres: NewUrlShortenerPostgreSQL(postgresDB),
+		UrlShortenerPostgres: NewUrlShortenerPostgreSQL(client),
 		UrlShortenerRedis:    NewUrlShortenerRedis(redisClient),
 	}
 }

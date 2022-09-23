@@ -27,18 +27,20 @@ const (
 )
 
 func main() {
+	ctx := context.Background()
+
 	router := httprouter.New()
 
 	cfg := config.GetConfig()
 
 	linkHasher := utils.NewLinkHasher()
 
-	postgresClient, err := postgresql.NewClient(context.Background(), maxAttemptsForConnectPostgres, cfg.Storage.Postgresql)
+	postgresClient, err := postgresql.NewClient(ctx, maxAttemptsForConnectPostgres, cfg.Storage.Postgresql)
 	if err != nil {
 		panic(err)
 	}
 
-	redisClient, err := redis.NewClient(context.Background())
+	redisClient, err := redis.NewClient(ctx, cfg.Storage.Redis)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +52,7 @@ func main() {
 	handler := handler.NewHandler(service)
 	handler.Register(router)
 
-	srv := server.NewServer(router)
+	srv := server.NewServer(router, cfg.HTTP)
 
 	go func() {
 		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
@@ -69,9 +71,7 @@ func main() {
 	ctx, shutdown := context.WithTimeout(context.Background(), timeout)
 	defer shutdown()
 
-	if err := postgresClient.Close(); err != nil {
-		log.Fatalf(err.Error())
-	}
+	postgresClient.Close()
 
 	if err := redisClient.Close(); err != nil {
 		log.Fatalf(err.Error())

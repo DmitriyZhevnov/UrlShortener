@@ -3,17 +3,18 @@ package redis
 import (
 	"context"
 
-	"gopkg.in/redis.v3"
+	"github.com/DmitriyZhevnov/UrlShortener/internal/config"
+	"github.com/go-redis/redis/v8"
 )
 
-func NewClient(ctx context.Context) (client *redis.Client, err error) {
+func NewClient(ctx context.Context, sc config.Redis) (client *redis.Client, err error) {
 	client = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "",
-		DB:       0,
+		Addr:     sc.Addr + ":" + sc.Port,
+		Password: sc.Password,
+		DB:       sc.DB,
 	})
 
-	_, err = client.Ping().Result()
+	_, err = client.Ping(ctx).Result()
 	if err != nil {
 		panic(err)
 	}

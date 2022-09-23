@@ -1,5 +1,19 @@
-HOST=host.docker.internal
-PORT=5433
-DATABASE=postgres
-USERNAME=postgres
-PASSWORD=postgres
+# HTTP
+PORT=8080
+READ_TIMEOUT=5
+WRITE_TIMEOUT=5
+
+# PostgreSQL
+POS_HOST=host.docker.internal
+POS_PORT=5433
+POS_DATABASE=postgres
+POS_USERNAME=postgres
+POS_PASSWORD=postgres
+
+# Redis
+REDIS_IMAGE=redis:6379
+
+REDIS_IMAGE=redis:6379
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0

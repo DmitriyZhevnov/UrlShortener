@@ -24,4 +24,4 @@ make migrate
 ### REST API
 Endpoint | Method | Response codes | Description
 --- | --- | --- | ---
-*/generate | POST | 200, 400, 500 | Create user
+*/generate | POST | 200, 400, 500 | Generate short link
