@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/model"
@@ -10,10 +12,15 @@ import (
 )
 
 const (
+	timeout = 2 * time.Second
+
 	generateUrl = "/generate"
 )
 
 func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
+	ctx, cancel := context.WithTimeout(r.Context(), timeout)
+	defer cancel()
+
 	request := model.LinkRequest{}
 
 	decoder := json.NewDecoder(r.Body)
@@ -23,7 +30,7 @@ func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
 		return apperror.NewBadRequestError("invalid json")
 	}
 
-	shortLink, err := h.service.Get(r.Context(), request.Url)
+	shortLink, err := h.service.Get(ctx, request.Url)
 	if err != nil {
 		return err
 	}
