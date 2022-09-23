@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
-	"gopkg.in/redis.v3"
+	"github.com/go-redis/redis/v8"
 )
 
 type Repository struct {

@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 
-	"gopkg.in/redis.v3"
+	"github.com/go-redis/redis/v8"
 )
 
 func NewClient(ctx context.Context) (client *redis.Client, err error) {
@@ -13,7 +13,7 @@ func NewClient(ctx context.Context) (client *redis.Client, err error) {
 		DB:       0,
 	})
 
-	_, err = client.Ping().Result()
+	_, err = client.Ping(ctx).Result()
 	if err != nil {
 		panic(err)
 	}
