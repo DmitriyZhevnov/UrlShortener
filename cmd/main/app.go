@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,6 +17,7 @@ import (
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/postgresql"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/redis"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/logging"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
@@ -27,6 +28,8 @@ const (
 )
 
 func main() {
+	log := logging.GetLogger()
+
 	ctx := context.Background()
 
 	router := httprouter.New()
@@ -47,7 +50,7 @@ func main() {
 
 	storage := repository.NewRepository(postgresClient, redisClient)
 
-	service := service.NewService(storage, linkHasher)
+	service := service.NewService(log, storage, linkHasher)
 
 	handler := handler.NewHandler(service)
 	handler.Register(router)
@@ -55,8 +58,8 @@ func main() {
 	srv := server.NewServer(router, cfg.HTTP)
 
 	go func() {
-		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("error occurred while running http server: %s\n", err.Error())
+		if err := srv.Run(log); !errors.Is(err, http.ErrServerClosed) {
+			log.Fatal(fmt.Sprintf("error occurred while running http server: %s\n", err.Error()), nil)
 		}
 	}()
 
@@ -74,10 +77,10 @@ func main() {
 	postgresClient.Close()
 
 	if err := redisClient.Close(); err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error(), nil)
 	}
 
 	if err := srv.Stop(ctx); err != nil {
-		log.Fatalf("failed to stop server: %v", err)
+		log.Fatal(fmt.Sprintf("failed to stop server: %v", err), nil)
 	}
 }
