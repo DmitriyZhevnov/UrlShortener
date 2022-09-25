@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/config"
+	"github.com/DmitriyZhevnov/UrlShortener/pkg/logging"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -24,7 +25,8 @@ func NewServer(router *httprouter.Router, cfg config.HTTP) *Server {
 	}
 }
 
-func (s *Server) Run() error {
+func (s *Server) Run(logger logging.Logger) error {
+	logger.Info("starting server.", nil)
 	return s.httpServer.ListenAndServe()
 }
 
