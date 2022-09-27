@@ -36,7 +36,7 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	linkHasher := utils.NewLinkHasher()
+	linkHasher := utils.NewLinkHasher(cfg.Domain)
 
 	postgresClient, err := postgresql.NewClient(ctx, maxAttemptsForConnectPostgres, cfg.Storage.Postgresql)
 	if err != nil {
@@ -52,7 +52,7 @@ func main() {
 
 	service := service.NewService(log, storage, linkHasher)
 
-	handler := handler.NewHandler(service)
+	handler := handler.NewHandler(service, cfg.Domain)
 	handler.Register(router)
 
 	srv := server.NewServer(router, cfg.HTTP)

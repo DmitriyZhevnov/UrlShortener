@@ -67,3 +67,13 @@ func (s *urlShortenerService) GetShortLink(ctx context.Context, longLink string)
 	s.log.Info(fmt.Sprintf("short link for '%s' has been successfully saved in the database.", longLink), nil)
 	return shortLink, nil
 }
+
+func (s *urlShortenerService) GetLongLink(ctx context.Context, shortLink string) (string, error) {
+	longLink, err := s.postgresRepository.GetLongLink(ctx, shortLink)
+	if err != nil {
+		return "", err
+	}
+
+	s.log.Info(fmt.Sprintf("long link for '%s' has been successfully founded in the database.", shortLink), nil)
+	return longLink, nil
+}

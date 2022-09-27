@@ -15,6 +15,7 @@ type Repository struct {
 type UrlShortenerPostgres interface {
 	GetShortLink(ctx context.Context, longLink string) (string, error)
 	PostShortLink(ctx context.Context, longLink, shortLink string) error
+	GetLongLink(ctx context.Context, shortLink string) (string, error)
 }
 
 type UrlShortenerRedis interface {

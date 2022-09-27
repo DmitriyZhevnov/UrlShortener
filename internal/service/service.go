@@ -14,6 +14,7 @@ type Service struct {
 
 type UrlShortener interface {
 	GetShortLink(ctx context.Context, longLink string) (string, error)
+	GetLongLink(ctx context.Context, shortLink string) (string, error)
 }
 
 func NewService(logger logging.Logger, repos *repository.Repository, hasher utils.LinkHasher) *Service {

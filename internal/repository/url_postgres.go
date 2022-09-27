@@ -54,3 +54,17 @@ func (s *urlShortenerPostgres) PostShortLink(ctx context.Context, longLink, shor
 
 	return nil
 }
+
+func (s *urlShortenerPostgres) GetLongLink(ctx context.Context, shortLink string) (string, error) {
+	q := `
+		SELECT long_link FROM public.link WHERE short_link = $1
+	`
+
+	var longLink string
+	err := s.client.QueryRow(ctx, q, shortLink).Scan(&longLink)
+	if err != nil {
+		return "", apperror.NewErrNotFound(fmt.Sprintf("long link for '%s' not found", shortLink))
+	}
+
+	return longLink, nil
+}

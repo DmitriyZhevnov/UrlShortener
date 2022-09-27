@@ -14,6 +14,11 @@ func MiddleWare(h appHandler) http.HandlerFunc {
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			if errors.As(err, &appErr) {
+				if errors.Is(err, errNotFound) {
+					w.WriteHeader(http.StatusNotFound)
+					w.Write(appErr.Marshal())
+					return
+				}
 				if errors.Is(err, internalServerError) {
 					w.WriteHeader(http.StatusInternalServerError)
 					w.Write(appErr.Marshal())

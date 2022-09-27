@@ -14,14 +14,17 @@ type Handler interface {
 
 type handler struct {
 	service *service.Service
+	domain  string
 }
 
-func NewHandler(service *service.Service) Handler {
+func NewHandler(service *service.Service, domain string) Handler {
 	return &handler{
 		service: service,
+		domain:  domain,
 	}
 }
 
 func (h *handler) Register(router *httprouter.Router) {
-	router.HandlerFunc(http.MethodPost, generateUrl, apperror.MiddleWare(h.GetShortLink))
+	router.HandlerFunc(http.MethodPost, "/", apperror.MiddleWare(h.GetShortLink))
+	router.HandlerFunc(http.MethodGet, shrotUrl, apperror.MiddleWare(h.GetLongLink))
 }

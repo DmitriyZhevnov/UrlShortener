@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	Domain  string
 	Storage Storage
 	HTTP    HTTP
 }
@@ -59,6 +60,8 @@ func fromEnv(cfg *Config) error {
 	if err != nil {
 		return err
 	}
+
+	cfg.Domain = viper.GetString("DOMAIN")
 
 	cfg.HTTP.Port = viper.GetString("PORT")
 	cfg.HTTP.ReadTimeout = viper.GetInt("READ_TIMEOUT")
