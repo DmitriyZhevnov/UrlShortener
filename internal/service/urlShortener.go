@@ -28,7 +28,7 @@ func NewUrlShortenerSevice(logger logging.Logger, p repository.UrlShortenerPostg
 	}
 }
 
-func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string, error) {
+func (s *urlShortenerService) GetShortLink(ctx context.Context, longLink string) (string, error) {
 	url, err := s.hasher.IsValidLink(longLink)
 	if err != nil {
 		s.log.Warn(fmt.Sprintf("invalid link: '%s'", longLink), nil)

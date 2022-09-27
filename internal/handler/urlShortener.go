@@ -30,7 +30,7 @@ func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
 		return apperror.NewBadRequestError("invalid json")
 	}
 
-	shortLink, err := h.service.Get(ctx, request.Url)
+	shortLink, err := h.service.GetShortLink(ctx, request.Url)
 	if err != nil {
 		return err
 	}
