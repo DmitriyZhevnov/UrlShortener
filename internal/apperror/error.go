@@ -7,6 +7,7 @@ import (
 var (
 	internalServerError = newAppError("Internal Server error")
 	badRequestError     = newAppError("Bad Request")
+	errNotFound         = newAppError("Not found")
 )
 
 type appError struct {
@@ -29,6 +30,12 @@ func NewInternalServerError(developerMessage string) *appError {
 
 func NewBadRequestError(developerMessage string) *appError {
 	err := badRequestError
+	err.DeveloperMessage = developerMessage
+	return err
+}
+
+func NewErrNotFound(developerMessage string) *appError {
+	err := errNotFound
 	err.DeveloperMessage = developerMessage
 	return err
 }

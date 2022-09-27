@@ -28,7 +28,7 @@ func NewUrlShortenerSevice(logger logging.Logger, p repository.UrlShortenerPostg
 	}
 }
 
-func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string, error) {
+func (s *urlShortenerService) GetShortLink(ctx context.Context, longLink string) (string, error) {
 	url, err := s.hasher.IsValidLink(longLink)
 	if err != nil {
 		s.log.Warn(fmt.Sprintf("invalid link: '%s'", longLink), nil)
@@ -41,7 +41,7 @@ func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string,
 		return shortLink, nil
 	}
 
-	shortLink, err = s.postgresRepository.Get(ctx, longLink)
+	shortLink, err = s.postgresRepository.GetShortLink(ctx, longLink)
 	if err == nil {
 		s.log.Info(fmt.Sprintf("short link for '%s' has been found in postgres.", longLink), nil)
 		return shortLink, nil
@@ -52,7 +52,7 @@ func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string,
 	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
-		return s.postgresRepository.Post(ctx, longLink, shortLink)
+		return s.postgresRepository.PostShortLink(ctx, longLink, shortLink)
 	})
 
 	g.Go(func() error {
@@ -66,4 +66,14 @@ func (s *urlShortenerService) Get(ctx context.Context, longLink string) (string,
 
 	s.log.Info(fmt.Sprintf("short link for '%s' has been successfully saved in the database.", longLink), nil)
 	return shortLink, nil
+}
+
+func (s *urlShortenerService) GetLongLink(ctx context.Context, shortLink string) (string, error) {
+	longLink, err := s.postgresRepository.GetLongLink(ctx, shortLink)
+	if err != nil {
+		return "", err
+	}
+
+	s.log.Info(fmt.Sprintf("long link for '%s' has been successfully founded in the database.", shortLink), nil)
+	return longLink, nil
 }

@@ -20,7 +20,7 @@ func NewUrlShortenerPostgreSQL(client postgresql.Client) *urlShortenerPostgres {
 	}
 }
 
-func (s *urlShortenerPostgres) Get(ctx context.Context, longLink string) (string, error) {
+func (s *urlShortenerPostgres) GetShortLink(ctx context.Context, longLink string) (string, error) {
 	q := `
 		SELECT short_link FROM public.link WHERE long_link = $1
 	`
@@ -34,7 +34,7 @@ func (s *urlShortenerPostgres) Get(ctx context.Context, longLink string) (string
 	return shortLink, nil
 }
 
-func (s *urlShortenerPostgres) Post(ctx context.Context, longLink, shortLink string) error {
+func (s *urlShortenerPostgres) PostShortLink(ctx context.Context, longLink, shortLink string) error {
 	q := `
         INSERT INTO link
             (long_link, short_link)
@@ -53,4 +53,18 @@ func (s *urlShortenerPostgres) Post(ctx context.Context, longLink, shortLink str
 	}
 
 	return nil
+}
+
+func (s *urlShortenerPostgres) GetLongLink(ctx context.Context, shortLink string) (string, error) {
+	q := `
+		SELECT long_link FROM public.link WHERE short_link = $1
+	`
+
+	var longLink string
+	err := s.client.QueryRow(ctx, q, shortLink).Scan(&longLink)
+	if err != nil {
+		return "", apperror.NewErrNotFound(fmt.Sprintf("long link for '%s' not found", shortLink))
+	}
+
+	return longLink, nil
 }

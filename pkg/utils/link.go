@@ -17,10 +17,13 @@ type LinkHasher interface {
 }
 
 type linkHasher struct {
+	domain string
 }
 
-func NewLinkHasher() *linkHasher {
-	return &linkHasher{}
+func NewLinkHasher(domain string) *linkHasher {
+	return &linkHasher{
+		domain: domain,
+	}
 }
 
 func (l *linkHasher) IsValidLink(link string) (*url.URL, error) {
@@ -33,7 +36,7 @@ func (l *linkHasher) GenerateShortLink(url *url.URL) string {
 	finalString := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
 
 	var b strings.Builder
-	b.WriteString(url.Host)
+	b.WriteString(l.domain)
 	b.WriteString("/")
 	b.WriteString(finalString[:10])
 
