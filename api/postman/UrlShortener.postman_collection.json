@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "95690103-c3b9-4767-8400-4871dba0f858",
+		"name": "UrlShortener",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getLongLink",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+
+							"",
+							"pm.test('Validate response data', function () {",
+							"    const jsonData = pm.response.json();",
+							"",
+							"    pm.expect(jsonData).not.empty;",
+							"    ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/FLrYyzn7roh",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"FLrYyzn7roh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generateShortLink",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+
+							"",
+							"pm.test('Validate response data', function () {",
+							"    const jsonData = pm.response.json();",
+							"",
+							"    pm.expect(jsonData).not.empty;",
+							"    ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": \"https://www.google.ru/example\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080"
+				}
+			},
+			"response": []
+		}
+	]
+}
