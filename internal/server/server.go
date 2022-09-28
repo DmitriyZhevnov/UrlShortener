@@ -7,14 +7,14 @@ import (
 
 	"github.com/DmitriyZhevnov/UrlShortener/internal/config"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/logging"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 )
 
 type Server struct {
 	httpServer *http.Server
 }
 
-func NewServer(router *httprouter.Router, cfg config.HTTP) *Server {
+func NewServer(router *mux.Router, cfg config.HTTP) *Server {
 	return &Server{
 		httpServer: &http.Server{
 			Addr:         ":" + cfg.Port,

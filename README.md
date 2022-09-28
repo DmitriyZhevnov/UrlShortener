@@ -41,3 +41,6 @@ Endpoint | Method | Response codes | Description
 --- | --- | --- | ---
 */ | POST | 200, 400, 500 | Generate short link
 */:uri | GET | 200, 404, 500 | Generate short link
+
+## Swagger UI
+http://localhost:8080/swagger/
