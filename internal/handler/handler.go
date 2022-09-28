@@ -4,6 +4,10 @@ import (
 	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
 	"github.com/gorilla/mux"
+
+	_ "github.com/DmitriyZhevnov/UrlShortener/docs"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Handler interface {
@@ -25,4 +29,6 @@ func NewHandler(service *service.Service, domain string) Handler {
 func (h *handler) Register(router *mux.Router) {
 	router.HandleFunc("/", apperror.MiddleWare(h.GetShortLink)).Methods("POST")
 	router.HandleFunc(shrotUrl, apperror.MiddleWare(h.GetLongLink)).Methods("GET")
+
+	router.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 }

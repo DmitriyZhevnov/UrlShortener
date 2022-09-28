@@ -27,6 +27,12 @@ const (
 	maxAttemptsForConnectPostgres = 5
 )
 
+// @title URL Shortener
+// @version 1.0
+// @description REST API for URL Shortener
+
+// @host localhost:8080
+// @BasePath /
 func main() {
 	log := logging.GetLogger()
 

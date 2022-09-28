@@ -19,6 +19,17 @@ const (
 	shrotUrl = "/{uri}"
 )
 
+// @Summary Get short link
+// @Tags Operations with url
+// @Description  get short link
+// @ModuleID GetShortLink
+// @Accept  json
+// @Produce  json
+// @Param request body model.LinkRequest true "url"
+// @Success 200 {object} string
+// @Failure 400 {object} apperror.AppError
+// @Failure 500 {object} apperror.AppError
+// @Router / [post]
 func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
@@ -41,6 +52,17 @@ func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// @Summary Get long link
+// @Tags Operations with url
+// @Description  get long link
+// @ModuleID GetLongLink
+// @Accept  json
+// @Produce  json
+// @Param uri path string true "uri"
+// @Success 200 {object} string
+// @Failure 400,404 {object} apperror.AppError
+// @Failure 500 {object} apperror.AppError
+// @Router /{uri} [get]
 func (h *handler) GetLongLink(w http.ResponseWriter, r *http.Request) error {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
