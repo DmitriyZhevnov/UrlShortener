@@ -19,7 +19,7 @@ import (
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/client/redis"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/logging"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/utils"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
@@ -32,7 +32,7 @@ func main() {
 
 	ctx := context.Background()
 
-	router := httprouter.New()
+	router := mux.NewRouter()
 
 	cfg := config.GetConfig()
 

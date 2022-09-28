@@ -1,15 +1,13 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/service"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 )
 
 type Handler interface {
-	Register(router *httprouter.Router)
+	Register(router *mux.Router)
 }
 
 type handler struct {
@@ -24,7 +22,7 @@ func NewHandler(service *service.Service, domain string) Handler {
 	}
 }
 
-func (h *handler) Register(router *httprouter.Router) {
-	router.HandlerFunc(http.MethodPost, "/", apperror.MiddleWare(h.GetShortLink))
-	router.HandlerFunc(http.MethodGet, shrotUrl, apperror.MiddleWare(h.GetLongLink))
+func (h *handler) Register(router *mux.Router) {
+	router.HandleFunc("/", apperror.MiddleWare(h.GetShortLink)).Methods("POST")
+	router.HandleFunc(shrotUrl, apperror.MiddleWare(h.GetLongLink)).Methods("GET")
 }

@@ -10,13 +10,13 @@ import (
 	"github.com/DmitriyZhevnov/UrlShortener/internal/apperror"
 	"github.com/DmitriyZhevnov/UrlShortener/internal/model"
 	"github.com/DmitriyZhevnov/UrlShortener/pkg/response"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 )
 
 const (
 	timeout = 2 * time.Second
 
-	shrotUrl = "/:uri"
+	shrotUrl = "/{uri}"
 )
 
 func (h *handler) GetShortLink(w http.ResponseWriter, r *http.Request) error {
@@ -45,7 +45,8 @@ func (h *handler) GetLongLink(w http.ResponseWriter, r *http.Request) error {
 	ctx, cancel := context.WithTimeout(r.Context(), timeout)
 	defer cancel()
 
-	shortURI := httprouter.ParamsFromContext(r.Context()).ByName("uri")
+	params := mux.Vars(r)
+	shortURI := params["uri"]
 
 	var b strings.Builder
 	b.WriteString(h.domain)
